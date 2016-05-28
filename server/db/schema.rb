@@ -14,9 +14,11 @@
 ActiveRecord::Schema.define(version: 20160528153702) do
 
   create_table "video_uploads", force: :cascade do |t|
-    t.text     "policy"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "presigned_post"
+    t.string   "uuid",           null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["uuid"], name: "index_video_uploads_on_uuid", unique: true
   end
 
   create_table "videos", force: :cascade do |t|

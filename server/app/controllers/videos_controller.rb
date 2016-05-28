@@ -24,6 +24,7 @@ class VideosController < ApplicationController
     end
   end
 
+  # TODO: endpoint should be authenticated. add user relation to VideoUpload
   def upload
     @upload = VideoUpload.new
 
