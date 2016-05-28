@@ -15,5 +15,8 @@
     "vendor/assets/bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "ng-file-upload": "^12.0.4"
+  }
 }
