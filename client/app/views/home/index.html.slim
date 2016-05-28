@@ -1,2 +1,12 @@
-h1 Home#index
-p Find me in app/views/home/index.html.slim
+div[ng-app="videoApp"]
+  div[ng-controller="VideoController as ctrl"]
+    form[ng-submit="ctrl.upload()"]
+      | Title:
+      input[type="text" ng-model="ctrl.form.title"]
+      br
+      br
+      | Video:
+      input[type="file" ng-model="ctrl.form.file" accept="video/*"]
+      br
+      br
+      input[type="submit" value="Upload"]
