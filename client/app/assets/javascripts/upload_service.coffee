@@ -4,7 +4,7 @@
 
   @run = ->
     $http
-      .post(root + '/videos', { video: { title: "bar" } })
+      .post(root + '/videos/upload', { video: { title: "bar" } })
       .then (resp) -> alert(JSON.stringify(resp))
 
   return @

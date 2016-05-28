@@ -24,6 +24,16 @@ class VideosController < ApplicationController
     end
   end
 
+  def upload
+    @upload = VideoUpload.new
+
+    if @upload.save
+      render json: @upload, status: :created
+    else
+      render json: @upload.errors, status: :unprocessable_entity
+    end
+  end
+
   # PATCH/PUT /videos/1
   def update
     if @video.update(video_params)

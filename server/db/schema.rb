@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160528140515) do
+ActiveRecord::Schema.define(version: 20160528153702) do
+
+  create_table "video_uploads", force: :cascade do |t|
+    t.text     "policy"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "videos", force: :cascade do |t|
     t.string   "title"

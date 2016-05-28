@@ -1,0 +1,2 @@
+class VideoUpload < ApplicationRecord
+end
