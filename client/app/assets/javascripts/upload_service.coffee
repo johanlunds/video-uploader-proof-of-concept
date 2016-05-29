@@ -30,6 +30,13 @@
         .post(root + '/videos/upload', {})
         .then (resp) -> resp.data
 
+    # TODO: research "multipart uploads" (aka. "resumable uploads"). http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
+    #       "In general, when your object size reaches 100 MB, you should consider using multipart uploads instead of uploading the object in a single operation."
+    #
+    # TODO: research bucket lifecycle policies for S3 "johanlunds-video-upload". http://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html
+    #
+    # TODO: use presigned *urls* instead? Difference? They have expiration. http://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html
+    #
     # Construct form like:
     #
     # <form action="<%= @post.url %>" method="post" enctype="multipart/form-data">
