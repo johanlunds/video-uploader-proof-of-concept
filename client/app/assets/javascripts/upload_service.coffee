@@ -61,24 +61,19 @@
       # <ETag>"b1cad9e8d5c00844ca214a28c9590134"</ETag>
       # </PostResponse>
       #
-      # TODO: nice thing = show upload progress bar:
-      #
-      # .then ((resp) ->
-      #   console.log 'Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data
-      #   return
-      # ), ((resp) ->
-      #   console.log 'Error status: ' + resp.status
-      #   return
-      # ), (evt) ->
-      #   progressPercentage = parseInt(100.0 * evt.loaded / evt.total)
-      #   console.log 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name
-      #   return
+      # TODO: nice thing = show upload progress bar
       Upload.upload(
         method: 'POST'
         url: upload.presigned_post.url
         data: data
         headers: { 'Accept': 'application/xml' } # "success_action_status=201" will make it return XML
-      ).then -> upload
+      ).then (resp) ->
+        upload
+      ,
+      null,
+      (event) ->
+        progressPercentage = parseInt(100.0 * event.loaded / event.total)
+        console.log 'progress: ' + progressPercentage + '% '
 
     createVideo = (upload) ->
       data = Object.assign(
@@ -90,11 +85,10 @@
         .post(root + '/videos', data)
         .then (resp) -> resp.data
 
-    # TODO: error handling
     createPresignedPost()
       .then uploadFileToS3
       .then createVideo
       .then -> alert("upload done!")
-
+      .catch (e) -> alert("something went wrong")
 
   return @
