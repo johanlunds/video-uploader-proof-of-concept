@@ -21,6 +21,8 @@ gem 'puma', '~> 3.0'
 gem 'rack-cors'
 gem 'dotenv-rails'
 
+gem 'workflow'
+
 gem 'aws-sdk', '~> 2'
 
 gem 'active_model_serializers', '~> 0.10.0'

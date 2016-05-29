@@ -22,11 +22,11 @@ ActiveRecord::Schema.define(version: 20160528153702) do
   end
 
   create_table "videos", force: :cascade do |t|
+    t.integer  "video_upload_id",                 null: false
     t.string   "title"
-    t.string   "path"
-    t.string   "url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "status",          default: "new", null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
 end

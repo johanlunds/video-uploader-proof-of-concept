@@ -1,3 +1,3 @@
 class VideoUploadSerializer < ActiveModel::Serializer
-  attributes :uuid, :presigned_post
+  attributes :id, :uuid, :presigned_post
 end

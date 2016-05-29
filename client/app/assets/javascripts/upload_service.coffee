@@ -8,6 +8,7 @@
     # Response example:
     #
     # {
+    #   "id": 23,
     #   "uuid": "34ca0134-3717-4ffd-b064-c4371bad821d",
     #   "presigned_post": {
     #     "form-data": {
@@ -40,23 +41,28 @@
     #   <input type="file" name="file"/>
     #
     # </form>
-    uploadFileToS3 = (presigned) ->
+    uploadFileToS3 = (upload) ->
       # Order of params seem important.
       # "Bucket POST must contain a field named 'key'. If it is specified, please check the order of the fields."
       # http://stackoverflow.com/questions/6943138/changing-the-sequence
       data = Object.assign(
         {},
-        presigned.presigned_post['form-data'],
+        upload.presigned_post['form-data'],
         { file: form.file },
       )
       # https://github.com/danialfarid/ng-file-upload
-      upload = Upload.upload(
-        method: 'POST'
-        url: presigned.presigned_post.url
-        data: data
-        headers: { 'Accept': 'application/xml' } # "success_action_status=201" will make it return XML
-      )
-
+      #
+      # Example response:
+      #
+      # <PostResponse>
+      # <Location>https://johanlunds-video-upload.s3-us-west-2.amazonaws.com/uploads%2F0e88399e-1167-4ae4-96b3-27c4af41cab8</Location>
+      # <Bucket>johanlunds-video-upload</Bucket>
+      # <Key>uploads/0e88399e-1167-4ae4-96b3-27c4af41cab8</Key>
+      # <ETag>"b1cad9e8d5c00844ca214a28c9590134"</ETag>
+      # </PostResponse>
+      #
+      # TODO: nice thing = show upload progress bar:
+      #
       # .then ((resp) ->
       #   console.log 'Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data
       #   return
@@ -67,10 +73,28 @@
       #   progressPercentage = parseInt(100.0 * evt.loaded / evt.total)
       #   console.log 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name
       #   return
+      Upload.upload(
+        method: 'POST'
+        url: upload.presigned_post.url
+        data: data
+        headers: { 'Accept': 'application/xml' } # "success_action_status=201" will make it return XML
+      ).then -> upload
 
+    createVideo = (upload) ->
+      data = Object.assign(
+        {},
+        { title: form.title },
+        { video_upload_id: upload.id }
+      )
+      $http
+        .post(root + '/videos', data)
+        .then (resp) -> resp.data
+
+    # TODO: error handling
     createPresignedPost()
       .then uploadFileToS3
-      .then -> alert("done!")
+      .then createVideo
+      .then -> alert("upload done!")
 
 
   return @
