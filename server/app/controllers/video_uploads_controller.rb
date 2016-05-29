@@ -13,15 +13,14 @@ class VideoUploadsController < ApplicationController
     render json: @video_upload
   end
 
+  # TODO: endpoint should be authenticated. add user relation to VideoUpload
+  #
   # POST /video_uploads
   def create
-    @video_upload = VideoUpload.new(video_upload_params)
+    @video_upload = VideoUpload.new
+    @video_upload.save!
 
-    if @video_upload.save
-      render json: @video_upload, status: :created, location: @video_upload
-    else
-      render json: @video_upload.errors, status: :unprocessable_entity
-    end
+    render json: @video_upload, status: :created, location: @video_upload
   end
 
   # PATCH/PUT /video_uploads/1
