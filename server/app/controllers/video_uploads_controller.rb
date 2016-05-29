@@ -19,6 +19,7 @@ class VideoUploadsController < ApplicationController
   def create
     @video_upload = VideoUpload.new
     @video_upload.save!
+    @video_upload.prepare!
 
     render json: @video_upload, status: :created, location: @video_upload
   end

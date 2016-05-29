@@ -1,8 +1,40 @@
 class VideoUpload < ApplicationRecord
+  has_one :video
+
   serialize :presigned_post, JSON
 
+  include Workflow
+
+  workflow_column :status
+  workflow do
+    state :new do
+      event :prepare, transitions_to: :uploading
+    end
+    state :uploading do
+      event :uploaded, transitions_to: :processing
+    end
+    state :processing do
+      event :processed, transitions_to: :finished
+    end
+    state :finished
+  end
+
   before_create :generate_uuid
-  before_create :create_presigned_post
+
+  def prepare
+    # upload
+    create_presigned_post
+  end
+
+  def uploaded
+    # process
+    create_elastic_transcoder_job
+  end
+
+  def processed
+    # finish
+    video.publish!
+  end
 
   private
 
@@ -32,5 +64,10 @@ class VideoUpload < ApplicationRecord
       'url' => s3_direct_post.url,
       'host' => URI.parse(s3_direct_post.url).host,
     }
+  end
+
+  # https://medium.com/@randika/aws-ruby-sdk-and-elastic-transcoder-example-c6c34fb5bc32#.5s897kmem
+  def create_elastic_transcoder_job
+
   end
 end
