@@ -27,7 +27,7 @@
     # }
     createVideoUploadWithPresignedPost = ->
       $http
-        .post(root + '/videos/upload', {})
+        .post(root + '/video_uploads', {})
         .then (resp) -> resp.data
 
     # TODO: research "multipart uploads" (aka. "resumable uploads"). http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
