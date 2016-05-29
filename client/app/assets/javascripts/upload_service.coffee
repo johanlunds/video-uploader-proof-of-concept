@@ -25,7 +25,7 @@
     #     "host": "johanlunds-video-upload.s3-us-west-2.amazonaws.com"
     #   }
     # }
-    createPresignedPost = ->
+    createVideoUploadWithPresignedPost = ->
       $http
         .post(root + '/videos/upload', {})
         .then (resp) -> resp.data
@@ -92,7 +92,7 @@
         .post(root + '/videos', data)
         .then (resp) -> resp.data
 
-    createPresignedPost()
+    createVideoUploadWithPresignedPost()
       .then uploadFileToS3
       .then createVideo
       .then -> alert("upload done!")
