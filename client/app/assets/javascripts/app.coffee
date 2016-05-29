@@ -1,1 +1,1 @@
-@app = angular.module('videoApp', [])
+@app = angular.module('videoApp', ['ngFileUpload'])

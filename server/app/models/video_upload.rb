@@ -20,12 +20,12 @@ class VideoUpload < ApplicationRecord
     s3_direct_post = s3_bucket.presigned_post(
       key: "uploads/#{uuid}",
       success_action_status: '201',
-      acl: 'private' # no public read
-      # content_length_range: 1..(10*1024),
-      # content_type_starts_with: 'video/',
-      # metadata: {
-      #   'original-filename': '${filename}'
-      # },
+      acl: 'private', # no public read
+      content_length_range: 1..(3.gigabytes), # TODO: does not work? wrong option name perhaps?
+      # content_type_starts_with: 'video/', # TODO: does not work? :S
+      metadata: {
+        'original-filename': '${filename}'
+      },
     )
     self.presigned_post = {
       'form-data' => s3_direct_post.fields,

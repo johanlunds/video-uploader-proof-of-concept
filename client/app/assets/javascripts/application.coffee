@@ -13,5 +13,6 @@
 #= require angular
 #= require angular-animate
 #= require angular-resource
+#= require ng-file-upload/ng-file-upload
 #= require ./app
 #= require_tree .

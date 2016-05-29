@@ -3,6 +3,6 @@
   @form = {}
 
   @upload = ->
-    uploadService.run()
+    uploadService.run(@form)
 
   return @
