@@ -20,6 +20,7 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 gem 'dotenv-rails'
+gem 'hashie'
 
 # use fork so callbacks are executed + other non-status attrs are saved
 gem 'workflow', git: 'https://github.com/brettjnorris/workflow.git'

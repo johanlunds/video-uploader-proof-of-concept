@@ -10,3 +10,15 @@
 7. move results + original to bucket #2
 8. post to SNS when Elastic Transcoder finished (that does PUT /videos/upload/:id)
 9. set state = processed
+
+## How to get SNS notifications to work when running locally:
+
+```
+./ngrok http 4000
+```
+
+Set up SNS to POST to:
+
+```
+http://3e253438.ngrok.io/video_uploads/sns_notifications
+```
