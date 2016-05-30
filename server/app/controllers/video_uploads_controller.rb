@@ -44,6 +44,8 @@ class VideoUploadsController < ApplicationController
   # http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html
   # http://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Client.html#confirm_subscription-instance_method
   #
+  # Configure S3 <-> SNS notifications: https://docs.aws.amazon.com/AmazonS3/latest/dev/ways-to-add-notification-config-to-bucket.html
+  #
   # Example SubscriptionConfirmation:
   #
   # {
@@ -94,7 +96,7 @@ class VideoUploadsController < ApplicationController
         token: notification.Token,
       })
     when "Notification"
-      VideoUploadSNSNotificationHandler.handle(notification.Message)
+      VideoUploadSNSNotificationHandler.handle(notification)
     else
       raise "Unknown notification type #{notification.Type}"
     end
