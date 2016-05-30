@@ -2,6 +2,7 @@ class VideoUpload < ApplicationRecord
   has_one :video
 
   serialize :presigned_post, JSON
+  serialize :transcoder_job_data, JSON
 
   include Workflow
 
@@ -67,7 +68,108 @@ class VideoUpload < ApplicationRecord
   end
 
   # https://medium.com/@randika/aws-ruby-sdk-and-elastic-transcoder-example-c6c34fb5bc32#.5s897kmem
+  #
+  # Useful pages:
+  #
+  # * https://console.aws.amazon.com/elastictranscoder/home?region=us-west-2#presets:
+  # * https://console.aws.amazon.com/elastictranscoder/home?region=us-west-2#create-job:
+  # * http://docs.aws.amazon.com/elastictranscoder/latest/developerguide/introduction.html
+  # * http://aws.amazon.com/elastictranscoder/
   def create_elastic_transcoder_job
+    # uses region + credentials from Aws.config
+    transcoder = Aws::ElasticTranscoder::Client.new
 
+    # HLSV4
+    # https://aws.amazon.com/blogs/aws/ets-hls4-support/
+    # "This adaptive streaming protocol is commonly used by newer iOS (5+) and Android (4.4+) devices."
+    #
+    # HLS4 should have separate audio + video outputs/tracks.
+    options = {
+      # arn:aws:elastictranscoder:us-west-2:784245509715:pipeline/1464551986249-lqqtib
+      # Test video_uploads ***REMOVED***
+      pipeline_id: "1464551986249-lqqtib",
+      input: {
+        key: presigned_post['form-data']['key']
+      },
+      # TODO: multiple bitrates - how?
+      # TODO: create video thumbnails - for moderation.
+      outputs: [
+        {
+          key: "hls_video_400k",
+          # https://console.aws.amazon.com/elastictranscoder/home?region=us-west-2#preset-details:1351620000001-200055
+          # System preset: HLS Video - 400k
+          preset_id: '1351620000001-200055',
+          segment_duration: "10"
+        },
+        {
+          key: "hls_audio_64k",
+          # https://console.aws.amazon.com/elastictranscoder/home?region=us-west-2#preset-details:1351620000001-200071
+          # System preset: HLS Audio - 64k
+          preset_id: '1351620000001-200071',
+          segment_duration: "10"
+        },
+      ],
+      playlists: [
+        {
+          name: "index",
+          format: "HLSv4",
+          output_keys: ["hls_video_400k", "hls_audio_64k"]
+        }
+      ],
+      # TODO: should use another, new UUID for this? Should use another table/row/record for submitting to Elastic Transcode, to handle resubmits/retranscodes/failures/retries?
+      output_key_prefix: "hlsv4/#{uuid}/"
+    }
+
+    job = transcoder.create_job(options)
+
+    # STATUS_SUBMITTED =  "Submitted"
+    # STATUS_PROGRESSING =  "Progressing"
+    # STATUS_COMPLETE =  "Complete"
+    # STATUS_CANCELED =  "Canceled"
+    # STATUS_ERROR =  "Error"
+    #
+    # On Progressing Event
+    # On Warning Event
+    # On Completion Event
+    # On Error Event
+    #
+    # Example response:
+    #
+    # {:id=>"1464568658231-44vnuh",
+    #  :arn=>
+    #   "arn:aws:elastictranscoder:us-west-2:784245509715:job/1464568658231-44vnuh",
+    #  :pipeline_id=>"1464551986249-lqqtib",
+    #  :input=>{:key=>"uploads/ed05c287-fc99-4504-8e1e-bc710627700d"},
+    #  :output=>
+    #   {:id=>"1",
+    #    :key=>"hls_video_400k",
+    #    :preset_id=>"1351620000001-200055",
+    #    :segment_duration=>"10.0",
+    #    :status=>"Submitted",
+    #    :watermarks=>[]},
+    #  :outputs=>
+    #   [{:id=>"1",
+    #     :key=>"hls_video_400k",
+    #     :preset_id=>"1351620000001-200055",
+    #     :segment_duration=>"10.0",
+    #     :status=>"Submitted",
+    #     :watermarks=>[]},
+    #    {:id=>"2",
+    #     :key=>"hls_audio_64k",
+    #     :preset_id=>"1351620000001-200071",
+    #     :segment_duration=>"10.0",
+    #     :status=>"Submitted",
+    #     :watermarks=>[]}],
+    #  :output_key_prefix=>"hlsv4/ed05c287-fc99-4504-8e1e-bc710627700d/",
+    #  :playlists=>
+    #   [{:name=>"index",
+    #     :format=>"HLSv4",
+    #     :output_keys=>["hls_video_400k", "hls_audio_64k"],
+    #     :status=>"Submitted"}],
+    #  :status=>"Submitted",
+    #  :timing=>{:submit_time_millis=>1464568658258}}
+    self.transcoder_job_id = job.data[:job][:id]
+    self.transcoder_job_status = job.data[:job][:status]
+    self.transcoder_job_data = job.data[:job].to_h
   end
 end
