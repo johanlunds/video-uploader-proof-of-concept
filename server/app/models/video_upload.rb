@@ -169,7 +169,6 @@ class VideoUpload < ApplicationRecord
     #  :status=>"Submitted",
     #  :timing=>{:submit_time_millis=>1464568658258}}
     self.transcoder_job_id = job.data[:job][:id]
-    self.transcoder_job_status = job.data[:job][:status]
     self.transcoder_job_data = job.data[:job].to_h
   end
 end

@@ -16,6 +16,37 @@ class VideoUploadSNSNotificationHandler
   #  "UnsubscribeURL"=>
   #   "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:784245509715:video_uploads_s3:c4c18f2f-3069-4bfa-8fae-90572e859d22"}
   #
+  # Example Transcoder Notification:
+  #
+  # {"Type"=>"Notification",
+  #  "MessageId"=>"e8b8c107-a693-5ef4-a815-8ec2056b573f",
+  #  "TopicArn"=>
+  #   "arn:aws:sns:us-west-2:784245509715:video_uploads_elastictranscoder",
+  #  "Subject"=>
+  #   "Amazon Elastic Transcoder has scheduled job 1464574390308-dd3t38 for transcoding.",
+  #  "Message"=>
+  #   "{\n  \"state\" : \"PROGRESSING\",\n  \"version\" : \"2012-09-25\",\n  \"jobId\" : \"1464574390308-dd3t38\",\n  \"pipelineId\" : \"1464551986249-lqqtib\",\n  \"input\" : {\n    \"key\" : \"uploads/20f5f9c1-1ce4-4c48-b10f-709117e20e2a\"\n  },\n  \"outputKeyPrefix\" : \"hlsv4/20f5f9c1-1ce4-4c48-b10f-709117e20e2a/\",\n  \"outputs\" : [ {\n    \"id\" : \"1\",\n    \"presetId\" : \"1351620000001-200055\",\n    \"key\" : \"hls_video_400k\",\n    \"segmentDuration\" : 10.0,\n    \"status\" : \"Progressing\"\n  }, {\n    \"id\" : \"2\",\n    \"presetId\" : \"1351620000001-200071\",\n    \"key\" : \"hls_audio_64k\",\n    \"segmentDuration\" : 10.0,\n    \"status\" : \"Progressing\"\n  } ],\n  \"playlists\" : [ {\n    \"name\" : \"index\",\n    \"format\" : \"HLSv4\",\n    \"outputKeys\" : [ \"hls_video_400k\", \"hls_audio_64k\" ],\n    \"status\" : \"Progressing\"\n  } ]\n}",
+  #  "Timestamp"=>"2016-05-30T02:13:12.258Z",
+  #  "SignatureVersion"=>"1",
+  #  "Signature"=>
+  #   "dC12vOPxk5APfVREc8oMRYOBuApqoyrjkNQTc4zGxO/0eeb1gv2f6DC9k0kr3R4T1BRiCwoZo49rtZDQweU/06j5qsmYanIuIm5deNhNGiJ+XaFt7ThffRWkd52VMcnFP81oKhUMSbjF7FN8cTX0izlfD298p8B09/4hgg0YPs83LJJRkc0eTT3Drw2xl1Uu1oVsiXEdX+ab86J9SEKA0tE1ZukJIbKoDRhweCmgmbowNjuemS8PN7cRkjRHiXH6pv18D8ULgtnpty2uRLUKgsIXMD01ytbEC+mXrl0WD+aX20USrPrTGBGMDLRmnY9zhJRxPniuCfpkC6q5i6ZKPg==",
+  #  "SigningCertURL"=>
+  #   "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-bb750dd426d95ee9390147a5624348ee.pem",
+  #  "UnsubscribeURL"=>
+  #   "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:784245509715:video_uploads_elastictranscoder:deeb63d1-7a0a-4edc-b73f-733b6e2411cc"}
+  def self.handle(notification)
+    case notification.TopicArn
+    when "arn:aws:sns:us-west-2:784245509715:video_uploads_s3"
+      handle_s3_object_created(notification)
+    when "arn:aws:sns:us-west-2:784245509715:video_uploads_elastictranscoder"
+      handle_elastic_transcoder_update(notification)
+    else
+      raise "unrecognized TopicArn: #{notification.TopicArn}"
+    end
+  end
+
+  private
+
   # Example S3 Message:
   #
   # {"Records"=>
@@ -42,26 +73,22 @@ class VideoUploadSNSNotificationHandler
   #         "size"=>13414967,
   #         "eTag"=>"b1cad9e8d5c00844ca214a28c9590134",
   #         "sequencer"=>"00574B9F6F1F029074"}}}]}
-  #
-  # Example Transcoder Notification:
-  #
-  # {"Type"=>"Notification",
-  #  "MessageId"=>"e8b8c107-a693-5ef4-a815-8ec2056b573f",
-  #  "TopicArn"=>
-  #   "arn:aws:sns:us-west-2:784245509715:video_uploads_elastictranscoder",
-  #  "Subject"=>
-  #   "Amazon Elastic Transcoder has scheduled job 1464574390308-dd3t38 for transcoding.",
-  #  "Message"=>
-  #   "{\n  \"state\" : \"PROGRESSING\",\n  \"version\" : \"2012-09-25\",\n  \"jobId\" : \"1464574390308-dd3t38\",\n  \"pipelineId\" : \"1464551986249-lqqtib\",\n  \"input\" : {\n    \"key\" : \"uploads/20f5f9c1-1ce4-4c48-b10f-709117e20e2a\"\n  },\n  \"outputKeyPrefix\" : \"hlsv4/20f5f9c1-1ce4-4c48-b10f-709117e20e2a/\",\n  \"outputs\" : [ {\n    \"id\" : \"1\",\n    \"presetId\" : \"1351620000001-200055\",\n    \"key\" : \"hls_video_400k\",\n    \"segmentDuration\" : 10.0,\n    \"status\" : \"Progressing\"\n  }, {\n    \"id\" : \"2\",\n    \"presetId\" : \"1351620000001-200071\",\n    \"key\" : \"hls_audio_64k\",\n    \"segmentDuration\" : 10.0,\n    \"status\" : \"Progressing\"\n  } ],\n  \"playlists\" : [ {\n    \"name\" : \"index\",\n    \"format\" : \"HLSv4\",\n    \"outputKeys\" : [ \"hls_video_400k\", \"hls_audio_64k\" ],\n    \"status\" : \"Progressing\"\n  } ]\n}",
-  #  "Timestamp"=>"2016-05-30T02:13:12.258Z",
-  #  "SignatureVersion"=>"1",
-  #  "Signature"=>
-  #   "dC12vOPxk5APfVREc8oMRYOBuApqoyrjkNQTc4zGxO/0eeb1gv2f6DC9k0kr3R4T1BRiCwoZo49rtZDQweU/06j5qsmYanIuIm5deNhNGiJ+XaFt7ThffRWkd52VMcnFP81oKhUMSbjF7FN8cTX0izlfD298p8B09/4hgg0YPs83LJJRkc0eTT3Drw2xl1Uu1oVsiXEdX+ab86J9SEKA0tE1ZukJIbKoDRhweCmgmbowNjuemS8PN7cRkjRHiXH6pv18D8ULgtnpty2uRLUKgsIXMD01ytbEC+mXrl0WD+aX20USrPrTGBGMDLRmnY9zhJRxPniuCfpkC6q5i6ZKPg==",
-  #  "SigningCertURL"=>
-  #   "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-bb750dd426d95ee9390147a5624348ee.pem",
-  #  "UnsubscribeURL"=>
-  #   "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:784245509715:video_uploads_elastictranscoder:deeb63d1-7a0a-4edc-b73f-733b6e2411cc"}
-  #
+  def self.handle_s3_object_created(notification)
+    msg = JSON.parse(notification.Message)
+
+    # TODO: handle multiple files (?) and multipart upload events:
+    raise "unexpected number of records for: #{msg}" if msg["Records"].length > 1
+    raise "unhandled eventName for: #{msg}" if msg["Records"][0]["eventName"] != "ObjectCreated:Post"
+
+    key = msg["Records"][0]["s3"]["object"]["key"]
+    uuid = key.split("/").last
+
+    upload = VideoUpload.find_by(uuid: uuid)
+    raise "VideoUpload not found for key: #{key}" if upload.nil?
+
+    upload.uploaded!
+  end
+
   # Example Transcoder Messages:
   #
   # {"state"=>"PROGRESSING",
@@ -113,8 +140,18 @@ class VideoUploadSNSNotificationHandler
   #     "format"=>"HLSv4",
   #     "outputKeys"=>["hls_video_400k", "hls_audio_64k"],
   #     "status"=>"Complete"}]}
-  def self.handle(notification)
-    msg = JSON.parse(msg)
-    pp msg
+  def self.handle_elastic_transcoder_update(notification)
+    msg = JSON.parse(notification.Message)
+
+    # TODO: handle more events including errors. see notes in VideoUpload#create_elastic_transcoder_job
+    return unless msg["state"] == "COMPLETED"
+
+    input_key = msg["input"]["key"]
+    uuid = input_key.split("/").last
+
+    upload = VideoUpload.find_by(uuid: uuid)
+    raise "VideoUpload not found for key: #{input_key}" if upload.nil?
+
+    upload.processed!
   end
 end
