@@ -6,7 +6,7 @@ class VideoUploadSNSNotificationHandler
   #  "TopicArn"=>"arn:aws:sns:us-west-2:784245509715:video_uploads_s3",
   #  "Subject"=>"Amazon S3 Notification",
   #  "Message"=>
-  #   "{\"Records\":[{\"eventVersion\":\"2.0\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-west-2\",\"eventTime\":\"2016-05-30T02:10:12.722Z\",\"eventName\":\"ObjectCreated:Post\",\"userIdentity\":{\"principalId\":\"AWS:***REMOVED***\"},\"requestParameters\":{\"sourceIPAddress\":\"***REMOVED***\"},\"responseElements\":{\"x-amz-request-id\":\"4FB3974093AFF77B\",\"x-amz-id-2\":\"5fqjqmW8NVJV5a6k0mlUQo60OzAdTfz9LFxJJVTDHNFXpu9qwsE+lEHGjxFlXTQQBW9avAPIMH8=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"VideoUploadsNotify\",\"bucket\":{\"name\":\"johanlunds-video-upload\",\"ownerIdentity\":{\"principalId\":\"***REMOVED***\"},\"arn\":\"arn:aws:s3:::johanlunds-video-upload\"},\"object\":{\"key\":\"uploads/20f5f9c1-1ce4-4c48-b10f-709117e20e2a\",\"size\":13414967,\"eTag\":\"b1cad9e8d5c00844ca214a28c9590134\",\"sequencer\":\"00574BA0FC2F384A25\"}}}]}",
+  #   "{\"Records\":[{\"eventVersion\":\"2.0\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-west-2\",\"eventTime\":\"2016-05-30T02:10:12.722Z\",\"eventName\":\"ObjectCreated:Post\",\"userIdentity\":{\"principalId\":\"AWS:\"},\"requestParameters\":{\"sourceIPAddress\":\"\"},\"responseElements\":{\"x-amz-request-id\":\"4FB3974093AFF77B\",\"x-amz-id-2\":\"5fqjqmW8NVJV5a6k0mlUQo60OzAdTfz9LFxJJVTDHNFXpu9qwsE+lEHGjxFlXTQQBW9avAPIMH8=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"VideoUploadsNotify\",\"bucket\":{\"name\":\"johanlunds-video-upload\",\"ownerIdentity\":{\"principalId\":\"\"},\"arn\":\"arn:aws:s3:::johanlunds-video-upload\"},\"object\":{\"key\":\"uploads/20f5f9c1-1ce4-4c48-b10f-709117e20e2a\",\"size\":13414967,\"eTag\":\"b1cad9e8d5c00844ca214a28c9590134\",\"sequencer\":\"00574BA0FC2F384A25\"}}}]}",
   #  "Timestamp"=>"2016-05-30T02:10:12.812Z",
   #  "SignatureVersion"=>"1",
   #  "Signature"=>
@@ -55,8 +55,8 @@ class VideoUploadSNSNotificationHandler
   #     "awsRegion"=>"us-west-2",
   #     "eventTime"=>"2016-05-30T02:03:39.962Z",
   #     "eventName"=>"ObjectCreated:Post",
-  #     "userIdentity"=>{"principalId"=>"AWS:***REMOVED***"},
-  #     "requestParameters"=>{"sourceIPAddress"=>"***REMOVED***"},
+  #     "userIdentity"=>{"principalId"=>"AWS:"},
+  #     "requestParameters"=>{"sourceIPAddress"=>""},
   #     "responseElements"=>
   #      {"x-amz-request-id"=>"C79B9EFA90D99A62",
   #       "x-amz-id-2"=>
@@ -66,7 +66,7 @@ class VideoUploadSNSNotificationHandler
   #       "configurationId"=>"VideoUploadsNotify",
   #       "bucket"=>
   #        {"name"=>"johanlunds-video-upload",
-  #         "ownerIdentity"=>{"principalId"=>"***REMOVED***"},
+  #         "ownerIdentity"=>{"principalId"=>""},
   #         "arn"=>"arn:aws:s3:::johanlunds-video-upload"},
   #       "object"=>
   #        {"key"=>"uploads/e4840cb9-a09c-45e4-bf4f-9445936c862f",

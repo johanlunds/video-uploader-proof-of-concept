@@ -86,7 +86,7 @@ class VideoUpload < ApplicationRecord
     # HLS4 should have separate audio + video outputs/tracks.
     options = {
       # arn:aws:elastictranscoder:us-west-2:784245509715:pipeline/1464551986249-lqqtib
-      # Test video_uploads ***REMOVED***
+      # Test video_uploads
       pipeline_id: "1464551986249-lqqtib",
       input: {
         key: presigned_post['form-data']['key']
