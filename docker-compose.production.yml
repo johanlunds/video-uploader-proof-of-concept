@@ -4,14 +4,13 @@
 version: '2'
 services:
   db:
-    image: postgres
   server:
-    build: ./server
-    command: bundle exec rails s -p 4000 -b 0.0.0.0
-    depends_on:
-      - db
+    env_file: ./server/.env.production
+    restart: always
+    ports:
+      - "4000:4000"
   client:
-    build: ./client
-    command: bundle exec rails s -p 3000 -b 0.0.0.0
-    depends_on:
-      - server
+    env_file: ./client/.env.production
+    restart: always
+    ports:
+      - "3000:3000"
