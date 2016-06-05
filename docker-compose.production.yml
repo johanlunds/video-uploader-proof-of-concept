@@ -3,6 +3,7 @@
 # Multiple files: https://docs.docker.com/compose/extends/#multiple-compose-files
 version: '2'
 services:
+  nginx:
   db:
   server:
     build:
@@ -10,13 +11,9 @@ services:
       dockerfile: Dockerfile.production
     env_file: ./server/.env.production
     restart: always
-    ports:
-      - "4000:4000"
   client:
     build:
       context: ./client
       dockerfile: Dockerfile.production
     env_file: ./client/.env.production
     restart: always
-    ports:
-      - "3000:3000"

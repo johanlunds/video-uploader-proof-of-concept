@@ -7,9 +7,27 @@ services:
     image: postgres
   server:
     command: bundle exec rails s -p 4000 -b 0.0.0.0
+    expose:
+      - 4000
     depends_on:
       - db
   client:
     command: bundle exec rails s -p 3000 -b 0.0.0.0
+    expose:
+      - 3000
     depends_on:
+      - server
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - client
+      - server
+    links:
+      - client
+      - server
+    depends_on:
+      - client
       - server
