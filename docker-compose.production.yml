@@ -5,11 +5,17 @@ version: '2'
 services:
   db:
   server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.production
     env_file: ./server/.env.production
     restart: always
     ports:
       - "4000:4000"
   client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.production
     env_file: ./client/.env.production
     restart: always
     ports:
