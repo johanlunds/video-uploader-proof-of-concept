@@ -7,3 +7,4 @@ ADD Gemfile.lock /myapp/Gemfile.lock
 RUN bundle install
 ADD . /myapp
 RUN bundle exec rake assets:precompile
+VOLUME /myapp/public
