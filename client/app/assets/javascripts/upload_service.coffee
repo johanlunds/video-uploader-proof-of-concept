@@ -33,7 +33,16 @@
     # TODO: research "multipart uploads" (aka. "resumable uploads"). http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
     #       "In general, when your object size reaches 100 MB, you should consider using multipart uploads instead of uploading the object in a single operation."
     #
+    #       https://github.com/TTLabs/EvaporateJS, https://github.com/uqee/angular-evaporate
+    #       https://gist.github.com/sevastos/5804803
+    #       https://www.quora.com/How-can-we-implement-multipart-upload-on-S3-using-browser-Javascript
+    #       https://www.google.se/search?q=multipart+upload+s3+javascript
+    #       https://www.thoughtworks.com/mingle/infrastructure/2015/06/15/security-and-s3-multipart-upload.html
+    #       http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3/ManagedUpload.html
+    #       http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
+    #
     # TODO: research bucket lifecycle policies for S3 "johanlunds-video-upload". http://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html
+    # TODO: clean up & move original to separate bucket for saving after upload + processing finished
     #
     # TODO: use presigned *urls* instead? Difference? They have expiration. http://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html
     #
