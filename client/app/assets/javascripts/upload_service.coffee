@@ -1,4 +1,4 @@
-@app.factory 'uploadService', ($http, Upload) ->
+@app.factory 'uploadService', ($http, Upload, $q) ->
 
   root = window.appConfig.serverUrl
 
@@ -57,7 +57,7 @@
     #   <input type="file" name="file"/>
     #
     # </form>
-    uploadFileToS3 = (upload) ->
+    uploadFileToS3 = (upload, deferred) ->
       # Order of params seem important.
       # "Bucket POST must contain a field named 'key'. If it is specified, please check the order of the fields."
       # http://stackoverflow.com/questions/6943138/changing-the-sequence
@@ -77,19 +77,12 @@
       # <ETag>"b1cad9e8d5c00844ca214a28c9590134"</ETag>
       # </PostResponse>
       #
-      # TODO: nice thing = show upload progress bar
       Upload.upload(
         method: 'POST'
         url: upload.presigned_post.url
         data: data
         headers: { 'Accept': 'application/xml' } # "success_action_status=201" will make it return XML
-      ).then (resp) ->
-        upload
-      ,
-      null,
-      (event) ->
-        progressPercentage = parseInt(100.0 * event.loaded / event.total)
-        console.log 'progress: ' + progressPercentage + '% '
+      ).then(((resp) -> upload), null, deferred.notify)
 
     createVideo = (upload) ->
       data = Object.assign(
@@ -101,10 +94,14 @@
         .post(root + '/videos', data)
         .then (resp) -> resp.data
 
+    deferred = $q.defer()
+
     createVideoUploadWithPresignedPost()
-      .then uploadFileToS3
+      .then (upload) -> uploadFileToS3(upload, deferred)
       .then createVideo
-      .then -> alert("upload done!")
-      .catch (e) -> alert("something went wrong")
+      .then deferred.resolve
+      .catch deferred.reject
+
+    deferred.promise
 
   return @
