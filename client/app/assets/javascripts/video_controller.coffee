@@ -9,8 +9,8 @@
     onProgress = (event) =>
       @progressPercentage = parseInt(100.0 * event.loaded / event.total)
 
-    @upload = new VideoUpload(@form)
-    @upload
+    @currentUpload = new VideoUpload(@form)
+    @currentUpload
       .run()
       .then(onFinished, onError, onProgress)
 
