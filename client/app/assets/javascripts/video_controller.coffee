@@ -1,4 +1,4 @@
-@app.controller 'VideoController', (uploadService) ->
+@app.controller 'VideoController', (VideoUpload) ->
 
   @form = {}
   @progressPercentage = null
@@ -9,8 +9,9 @@
     onProgress = (event) =>
       @progressPercentage = parseInt(100.0 * event.loaded / event.total)
 
-    uploadService
-      .run(@form)
+    @upload = new VideoUpload(@form)
+    @upload
+      .run()
       .then(onFinished, onError, onProgress)
 
   return @
