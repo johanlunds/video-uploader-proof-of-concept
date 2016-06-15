@@ -37,6 +37,12 @@ class VideoUpload < ApplicationRecord
     video.publish!
   end
 
+  def stream_url
+    if finished?
+      "#{ENV['S3_VIDEO_HOST']}/hlsv4/#{uuid}/index.m3u8"
+    end
+  end
+
   private
 
   def generate_uuid

@@ -10,4 +10,8 @@ class Video < ApplicationRecord
     end
     state :published
   end
+
+  def url
+    video_upload.stream_url
+  end
 end
