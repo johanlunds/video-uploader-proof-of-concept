@@ -10,3 +10,7 @@ div[ng-app="videoApp"]
       br
       br
       input[type="submit" value="Upload"]
+      br
+      br
+      span[ng-show="ctrl.progressPercentage"]
+        | Progress: {{ctrl.progressPercentage}}%

@@ -1,13 +1,13 @@
 @app.controller 'VideoController', (uploadService) ->
 
   @form = {}
+  @progressPercentage = null
 
   @upload = ->
     onFinished = -> alert("upload done!")
-    onProgress = (event) ->
-      progressPercentage = parseInt(100.0 * event.loaded / event.total)
-      console.log 'progress: ' + progressPercentage + '% '
     onError = (e) -> alert("something went wrong")
+    onProgress = (event) =>
+      @progressPercentage = parseInt(100.0 * event.loaded / event.total)
 
     uploadService
       .run(@form)
