@@ -9,6 +9,7 @@
       @createVideoUploadWithPresignedPost()
         .then @uploadFileToS3
         .then @createVideo
+        .then @waitUntilVideoUploadFinishProcessing
         .then @deferred.resolve
         .catch @deferred.reject
 
@@ -107,3 +108,17 @@
         .post(@host + '/videos', data)
         .then (resp) => @video = resp.data
 
+    waitUntilVideoUploadFinishProcessing: =>
+      outer = $q.defer()
+      reloadUpload = =>
+        $http
+          .get(@host + '/video_uploads/' + @upload.id)
+          .then (resp) => @upload = resp.data
+          .then =>
+            if @upload.status is "finished"
+              outer.resolve()
+            else
+              window.setTimeout reloadUpload, 1000
+          .catch outer.reject
+      reloadUpload()
+      outer.promise
