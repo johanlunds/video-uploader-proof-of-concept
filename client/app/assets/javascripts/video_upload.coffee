@@ -10,6 +10,7 @@
         .then @uploadFileToS3
         .then @createVideo
         .then @waitUntilVideoUploadFinishProcessing
+        .then @reloadVideo
         .then @deferred.resolve
         .catch @deferred.reject
 
@@ -122,3 +123,8 @@
           .catch outer.reject
       reloadUpload()
       outer.promise
+
+    reloadVideo: =>
+      $http
+        .get(@host + '/videos/' + @video.id)
+        .then (resp) => @video = resp.data
