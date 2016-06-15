@@ -10,7 +10,34 @@ div[ng-app="videoApp"]
       br
       br
       input[type="submit" value="Upload"]
-      br
-      br
-      span[ng-show="ctrl.progressPercentage"]
-        | Progress: {{ctrl.progressPercentage}}%
+
+    table[ng-show="ctrl.currentUpload"]
+      tr
+        th Upload Progress:
+        td
+          | {{ctrl.progressPercentage}}%
+      tr
+        th Upload UUID:
+        td
+          | {{ctrl.currentUpload.upload.uuid}}
+      tr
+        th Upload Status:
+        td
+          | {{ctrl.currentUpload.upload.status}}
+      tr
+        th Video ID:
+        td
+          | {{ctrl.currentUpload.video.id}}
+      tr
+        th Video Title:
+        td
+          | {{ctrl.currentUpload.video.title}}
+      tr
+        th Video Status:
+        td
+          | {{ctrl.currentUpload.video.status}}
+      tr
+        th Video URL:
+        td
+          | {{ctrl.currentUpload.video.url}}
+
