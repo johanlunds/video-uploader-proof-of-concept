@@ -1,6 +1,6 @@
 @app.factory 'uploadService', ($http, Upload) ->
 
-  root = "http://localhost:4000"
+  root = window.appConfig.serverUrl
 
   @run = (form) ->
     # 1. Generate presigned S3 POST
