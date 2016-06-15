@@ -2,18 +2,19 @@
   class VideoUpload
     constructor: (form) ->
       @form = form
-      @root = window.appConfig.serverUrl
 
     run: ->
-      deferred = $q.defer()
+      @deferred = $q.defer()
 
       @createVideoUploadWithPresignedPost()
-        .then (upload) => @uploadFileToS3(upload, deferred)
+        .then @uploadFileToS3
         .then @createVideo
-        .then deferred.resolve
-        .catch deferred.reject
+        .then @deferred.resolve
+        .catch @deferred.reject
 
-      deferred.promise
+      @deferred.promise
+
+    host: window.appConfig.serverUrl
 
     # 1. Generate presigned S3 POST
     #
@@ -39,8 +40,8 @@
     # }
     createVideoUploadWithPresignedPost: =>
       $http
-        .post(@root + '/video_uploads', {})
-        .then (resp) -> resp.data
+        .post(@host + '/video_uploads', {})
+        .then (resp) => @upload = resp.data
 
     # TODO: research "multipart uploads" (aka. "resumable uploads"). http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
     #       "In general, when your object size reaches 100 MB, you should consider using multipart uploads instead of uploading the object in a single operation."
@@ -69,13 +70,13 @@
     #   <input type="file" name="file"/>
     #
     # </form>
-    uploadFileToS3: (upload, deferred) =>
+    uploadFileToS3: =>
       # Order of params seem important.
       # "Bucket POST must contain a field named 'key'. If it is specified, please check the order of the fields."
       # http://stackoverflow.com/questions/6943138/changing-the-sequence
       data = Object.assign(
         {},
-        upload.presigned_post['form-data'],
+        @upload.presigned_post['form-data'],
         { file: @form.file },
       )
       # https://github.com/danialfarid/ng-file-upload
@@ -91,18 +92,18 @@
       #
       Upload.upload(
         method: 'POST'
-        url: upload.presigned_post.url
+        url: @upload.presigned_post.url
         data: data
         headers: { 'Accept': 'application/xml' } # "success_action_status=201" will make it return XML
-      ).then(((resp) -> upload), null, deferred.notify)
+      ).then(null, null, @deferred.notify)
 
-    createVideo: (upload) =>
+    createVideo: =>
       data = Object.assign(
         {},
         { title: @form.title },
-        { video_upload_id: upload.id }
+        { video_upload_id: @upload.id }
       )
       $http
-        .post(@root + '/videos', data)
-        .then (resp) -> resp.data
+        .post(@host + '/videos', data)
+        .then (resp) => @video = resp.data
 
