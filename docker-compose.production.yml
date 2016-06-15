@@ -3,17 +3,23 @@
 # Multiple files: https://docs.docker.com/compose/extends/#multiple-compose-files
 version: '2'
 services:
-  nginx:
   db:
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.production
     env_file: ./server/.env.production
     restart: always
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.production
     env_file: ./client/.env.production
     restart: always
+    volumes_from:
+      - client_assets
+  nginx:
+    volumes_from:
+      - client_assets
+  # Runs a single command and then quits. Mounts the result in "nginx" and "client".
+  # This so we can precompile with the ENV-vars needed. Precompiling is only done in production.
+  client_assets:
+    build: ./client
+    command: bundle exec rake assets:precompile
+    env_file: ./client/.env.production
+    volumes:
+      - /myapp/public

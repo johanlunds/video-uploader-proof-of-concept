@@ -18,3 +18,5 @@ tmp/*
 
 .env.*
 !.env.example
+
+/public/assets/*

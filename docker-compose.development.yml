@@ -6,15 +6,9 @@ services:
   nginx:
   db:
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.development
     volumes:
       - ./server:/myapp
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.development
     volumes:
       - ./client:/myapp
 

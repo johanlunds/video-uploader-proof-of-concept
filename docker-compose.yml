@@ -6,12 +6,14 @@ services:
   db:
     image: postgres
   server:
+    build: ./server
     command: bundle exec rails s -p 4000 -b 0.0.0.0
     expose:
       - 4000
     depends_on:
       - db
   client:
+    build: ./client
     command: bundle exec rails s -p 3000 -b 0.0.0.0
     expose:
       - 3000
@@ -22,9 +24,6 @@ services:
     ports:
       - "3000:3000"
       - "4000:4000"
-    volumes_from:
-      - client
-      - server
     links:
       - client
       - server
