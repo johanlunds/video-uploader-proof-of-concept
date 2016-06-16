@@ -41,3 +41,5 @@ div[ng-app="videoApp"]
         td
           | {{ctrl.currentUpload.video.url}}
 
+    video[ng-if="ctrl.currentUpload.video.url" hls-video hls-video-src="ctrl.currentUpload.video.url" controls]
+
