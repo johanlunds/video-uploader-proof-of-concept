@@ -10,9 +10,13 @@ services:
   client:
     env_file: ./client/.env.production
     restart: always
+    depends_on:
+      - client_assets
     volumes_from:
       - client_assets
   nginx:
+    depends_on:
+      - client_assets
     volumes_from:
       - client_assets
   # Runs a single command and then quits. Mounts the result in "nginx" and "client".
