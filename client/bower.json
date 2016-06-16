@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "ng-file-upload": "^12.0.4",
-    "hls.js": "^0.6.1"
+    "hls.js": "^0.6.1",
+    "angular-spinners": "^3.1.2"
   }
 }
