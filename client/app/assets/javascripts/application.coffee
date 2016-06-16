@@ -15,6 +15,7 @@
 #= require angular-resource
 #= require ng-file-upload/ng-file-upload
 #= require hls.js/dist/hls.js
+#= require angular-spinners/dist/angular-spinners.js
 #= require ./config
 #= require ./app
 #= require_tree .

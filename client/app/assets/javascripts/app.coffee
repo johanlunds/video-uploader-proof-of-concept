@@ -1,1 +1,1 @@
-@app = angular.module('videoApp', ['ngFileUpload'])
+@app = angular.module('videoApp', ['ngFileUpload', 'angularSpinners'])
